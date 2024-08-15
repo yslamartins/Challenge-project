@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
+import { User, UserEntity } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -31,6 +32,18 @@ async getUser(
   id: string
 ): Promise<User>{
   return this.usersService.findById(id);
+}
+@Put(':id')
+@ApiOperation({ summary: 'Update user by id' })
+@ApiParam({ name: 'id', description: 'User ID', type: String })
+@ApiBody({ type: UpdateUserDto })
+@ApiResponse({ status: 200, description: 'User successfully updated', type: UserEntity})
+@ApiResponse({ status: 404, description: 'User not found' })
+async updateUser(
+  @Param('id') id: string,
+  @Body() user: UpdateUserDto,
+): Promise<User> {
+  return this.usersService.updateById(id, user);
 }
 
 }
