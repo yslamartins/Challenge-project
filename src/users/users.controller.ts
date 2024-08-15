@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, UserEntity } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Query as ExpressQuery } from 'express-serve-static-core';
 
 @ApiTags('users')
 @Controller('users')
@@ -11,8 +12,8 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 @Get()
 @ApiOperation({ summary: 'Get all users' })
-async getAllUsers(): Promise<User[]>{
-  return this.usersService.findAll()
+async getAllUsers(@Query() query: ExpressQuery): Promise<User[]>{
+  return this.usersService.findAll(query)
 }
 
 @Post()

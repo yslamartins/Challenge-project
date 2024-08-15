@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { User, UserEntity } from './entities/user.entity'; // Certifique-se de que o caminho está correto
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Query } from 'express-serve-static-core';
 
 @Injectable()
 export class UsersService {
@@ -14,8 +15,26 @@ export class UsersService {
    * Retrieves all users from the database.
    * @returns A promise that resolves to an array of User objects.
    */
-  async findAll(): Promise<User[]> {
-    const users = await this.userModel.find().exec();
+  async findAll(query: Query): Promise<User[]> {
+    // Definições de paginação
+    const resPerPage = 5; // Quantidade de itens por página
+    const currentPage = Number(query.page) || 1; // Página atual, padrão para 1 se não especificado
+    const skip = resPerPage * (currentPage - 1); // Calcula o número de documentos a serem pulados
+
+    // Construção do filtro de pesquisa
+    const keyword = query.keyword ? {
+      name: {
+        $regex: query.keyword,
+        $options: 'i' // Insensível a maiúsculas e minúsculas
+      }
+    } : {};
+
+    // Consulta ao banco de dados com paginação
+    const users = await this.userModel.find({...keyword})
+      .skip(skip) // Pular documentos conforme a página atual
+      .limit(resPerPage) // Limitar a quantidade de documentos retornados
+      .exec();
+
     return users;
   }
   /**
