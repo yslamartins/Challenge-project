@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, UserEntity } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -44,6 +44,14 @@ async updateUser(
   @Body() user: UpdateUserDto,
 ): Promise<User> {
   return this.usersService.updateById(id, user);
+}
+@Delete('id')
+@ApiOperation({ summary: 'Delete user by id' })
+async deleteUser(
+  @Param('id')
+  id: string
+): Promise<User>{
+  return this.usersService.deleteById(id);
 }
 
 }
