@@ -16,6 +16,7 @@ export interface User extends Document {
 
 @Schema({
   timestamps: true,
+  
 })
 export class UserEntity {
   @Prop({ required: true })

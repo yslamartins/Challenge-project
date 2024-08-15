@@ -6,7 +6,7 @@ import { UserEntity, UserSchema } from './entities/user.entity'; // Certifique-s
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: UserEntity.name, schema: UserSchema }]), // Corrigido: nome do modelo e schema
+    MongooseModule.forFeature([{ name: UserEntity.name, schema: UserSchema, collection:'users' }]), // Corrigido: nome do modelo e schema
   ],
   controllers: [UsersController],
   providers: [UsersService],
