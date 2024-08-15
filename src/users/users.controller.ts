@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,4 +23,14 @@ async createUser(
 ): Promise<User> {
   return this.usersService.create(createUserDto);
 }
+
+@Get('id')
+@ApiOperation({ summary: 'Get user by id' })
+async getUser(
+  @Param('id')
+  id: string
+): Promise<User>{
+  return this.usersService.findById(id);
+}
+
 }
