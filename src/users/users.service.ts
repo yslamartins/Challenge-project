@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { User, UserEntity } from './entities/user.entity'; // Certifique-se de que o caminho está correto
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -52,20 +52,34 @@ export class UsersService {
    * @returns A promise that resolves to the User object if found, or null.
    */
   async findById(id: string): Promise<User> {
-    const user = await this.userModel.findById(id).exec(); 
 
+    const isValidId = mongoose.isValidObjectId(id)
+    if(!isValidId){
+      throw new BadRequestException('Please enter a correct id')
+    }
+
+    const user = await this.userModel.findById(id).exec(); 
+    
     if(!user){
       throw new NotFoundException('User not found.')
     }
     return user;
   }
   async updateById(id: string, user: UpdateUserDto): Promise<User> {
+    const isValidId = mongoose.isValidObjectId(id)
+    if(!isValidId){
+      throw new BadRequestException('Please enter a correct id')
+    }
     return await this.userModel.findByIdAndUpdate(id, user, {
       new: true,
       runValidators: true,
     }).exec()
   }
   async deleteById(id: string): Promise<User> {
+    const isValidId = mongoose.isValidObjectId(id)
+    if(!isValidId){
+      throw new BadRequestException('Please enter a correct id')
+    }
     return await this.userModel.findByIdAndDelete(id).exec();
   }
 }
