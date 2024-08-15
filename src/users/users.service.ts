@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserEntity } from './entities/user.entity'; // Certifique-se de que o caminho está correto
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -39,5 +40,10 @@ export class UsersService {
     }
     return user;
   }
-  // Outros métodos do serviço podem ser adicionados aqui
+  async updateById(id: string, user: UpdateUserDto): Promise<User> {
+    return await this.userModel.findByIdAndUpdate(id, user, {
+      new: true,
+      runValidators: true,
+    }).exec()
+  }
 }

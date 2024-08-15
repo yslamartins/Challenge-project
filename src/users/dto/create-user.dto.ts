@@ -15,5 +15,5 @@ export class CreateUserDto {
         example: 0,
         description: 'Role of the user (0: Admin, 1: Manager, 2: User)',
       })
-      role: number;
+      Role: number;
 }
