@@ -5,6 +5,7 @@ import { User, UserEntity } from './entities/user.entity'; // Certifique-se de q
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Query } from 'express-serve-static-core';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -43,8 +44,16 @@ export class UsersService {
    * @returns A promise that resolves to the created User object.
    */
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const createUser = new this.userModel(createUserDto);
-    return createUser.save();
+    const { password, ...rest } = createUserDto;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new this.userModel({
+      ...rest,
+      password: hashedPassword,
+      registerate: new Date(),
+    });
+
+    return newUser.save();
   }
   /**
    * Return a user by their ID.
