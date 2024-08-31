@@ -45,9 +45,10 @@ export class AuthService {
     if (!isPasswordMatched) {
       throw new UnauthorizedException('Incorrect data');
     }
-    const token = this.jwtService.sign({ id: user._id });
-    return { token };}catch(error){
-        
+    const token = this.jwtService.sign({ id: user._id, role: user.role });
+    return { token };
+  }catch(error){
+        console.log(error)
     }
   }
 }
