@@ -27,9 +27,8 @@ import { AdminGuard } from 'src/auth/guards/admin.guard';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  
   constructor(private usersService: UsersService) {}
-  
+
   @Get()
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get all users' })
@@ -78,12 +77,18 @@ export class UsersController {
     return this.usersService.updateById(id, user);
   }
 
-  @Delete('id')
+  @Delete(':id')
   @ApiOperation({ summary: 'Delete user by id' })
-  async deleteUser(
-    @Param('id')
-    id: string,
-  ): Promise<User> {
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID of the user to delete',
+  })
+  @ApiResponse({ status: 200, description: 'User successfully deleted.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @UseGuards(AuthGuard('jwt'), AdminGuard)
+  async deleteUser(@Param('id') id: string): Promise<{ message: string }> {
     return this.usersService.deleteById(id);
   }
 }
